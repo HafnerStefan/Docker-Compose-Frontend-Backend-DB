@@ -1,0 +1,62 @@
+version: "3.9" #Gibt die Version von Compose an. Ist aber nicht mehr nötig
+
+services: #Sagt Compose das jetzt die Anwendungen folgen Starten sol
+
+  api:          # Namen der Anwendung
+    build: ./api #Wo findest du die Anwendung
+    ports:        #Port umleitung der anwendung
+      - 3000:3000
+    init: true #OPTIONAL gibt dem Node das option
+    depends_on:
+     - postgres
+#    profiles: #OPTIONAL profiel name / OPTIONAL falls man etwas einzel starte will
+#      - api     # Es ist möglich mehrer Profile anzugeben und auch Share-profile
+  #  networks: #OPTIONAL als networks definiert worden sind
+  #    - test
+    
+  ui: #Namen der Anwendung2
+    image: nginx:${NGINX_VERSION}-alpine #Welches Image dafür gestartet werden soll
+    ports: 
+      - 4000:80
+    volumes: #Welche Daten von Ordner in das Image integriet werden sollen / Pfade
+      - .\ui:/usr/share/nginx/html:ro
+#    profiles: #OPTIONAL
+#      - ui
+    depends_on: #Macht das "ui" erst gestartet wird wen "api" schon lauft
+      - api
+ #   networks: #OPTIONAL
+  #    - test
+
+  postgres:
+    image: postgres:${POSTGRES_VERSION}-alpine
+    ports: 
+     - 5432:5432
+  #  profile:
+  #    - db
+    restart: always
+    environment:
+    - POSTGRES_USER=root
+    - POSTGRES_PASSWORD=root
+    - POSTGRES_DB=root
+
+    
+  #  networks:
+  #   - test
+ #     default:
+#       aliases:
+#        - datenbank
+
+#Netzwerk 
+
+#Alle Service in einem Compose können immer auf alle andere Service zugreifen. 
+#Da sie direkt in das selber Netzwerk integriet werden
+#Optional kann es folgender massen z.B. angepasst werden. 
+#ACHTUNG muss im in einelen Servicen vermekrt werden
+
+#networks: #OPTIONAL falls man das netzwerk bestimmen will
+# test:    #Netzwerk name
+#   driver: bridge # Netzwerk art
+#   attachable: true #Default einstellen / bei "false" ist es nicht mehr möglich ein Netzwerk wärend dem Laufen zu ändern.
+
+#Es gibt noch viele weiter Optionen siehe
+

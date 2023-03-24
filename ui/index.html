@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>Docker-Compose-Hafner</title>
+        <style>
+            body {
+
+                width: 100vw;
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+            }
+
+            #now {
+                font-family: sans-serif;
+                font-size: 2em;
+
+            }
+
+        </style>
+
+    </head>
+    <body>
+    <div id="now"></div>
+
+     <script>
+        const $now = document.querySelector('#now');
+        
+        setInterval(async()=>{
+            const response = await fetch('http://localhost:3000');
+            const { now } = await response.json();
+        
+            $now.innerText = new Date(now);
+
+        }, 1_000);
+
+     </script>
+
+    </body>
+</html>
+   
